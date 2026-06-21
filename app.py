@@ -14,7 +14,6 @@ from pathlib import Path
 
 import streamlit as st
 
-# ── Project root on path ─────────────────────────────────────────────
 ROOT = Path(__file__).parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -39,133 +38,179 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Hide default streamlit chrome */
     #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
+    footer     {visibility: hidden;}
+    header     {visibility: hidden;}
 
-    /* Page background */
-    .stApp { background-color: #f5f7fa; }
+    /* Full dark background */
+    .stApp { background-color: #0f1117; color: #e0e0e0; }
+    .block-container { padding-top: 2rem; padding-bottom: 2rem; max-width: 1200px; }
+
+    /* Sidebar */
+    section[data_testid="stSidebar"],
+    section[data-testid="stSidebar"] { background: #1a1a2e !important; }
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] div { color: #c9d1d9 !important; }
+    section[data-testid="stSidebar"] h2,
+    section[data-testid="stSidebar"] h3 { color: #ffffff !important; }
+    section[data-testid="stSidebar"] .stButton > button {
+        background: #238636 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        width: 100% !important;
+        font-weight: 600 !important;
+    }
+    section[data-testid="stSidebar"] .stButton > button:hover {
+        background: #2ea043 !important;
+    }
 
     /* Header */
     .app-header {
         background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border-radius: 12px;
-        padding: 1.5rem 2rem;
-        margin-bottom: 1.5rem;
-        color: white;
+        border-radius: 10px;
+        padding: 1.4rem 2rem;
+        margin-bottom: 1.8rem;
+        border: 1px solid #30363d;
     }
-    .app-header h1 { font-size: 1.6rem; margin: 0; color: white; }
-    .app-header p  { font-size: 0.88rem; color: #a8dadc; margin: 0.3rem 0 0 0; }
+    .app-header h1 { font-size: 1.5rem; margin: 0 0 0.3rem 0; color: #ffffff; }
+    .app-header p  { font-size: 0.85rem; color: #8b949e; margin: 0; }
+
+    /* Input label */
+    .input-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #c9d1d9;
+        margin-bottom: 0.4rem;
+    }
+
+    /* Text input overrides */
+    .stTextInput > div > div > input {
+        background: #161b22 !important;
+        color: #e6edf3 !important;
+        border: 1.5px solid #30363d !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+        padding: 0.6rem 1rem !important;
+        caret-color: #58a6ff !important;
+    }
+    .stTextInput > div > div > input:focus {
+        border-color: #58a6ff !important;
+        box-shadow: 0 0 0 3px #58a6ff22 !important;
+    }
+    .stTextInput > div > div > input::placeholder { color: #484f58 !important; }
+
+    /* Ask button */
+    div[data-testid="column"]:last-child .stButton > button {
+        background: #238636 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        height: 2.6rem !important;
+        width: 100% !important;
+        margin-top: 0.1rem !important;
+    }
+    div[data-testid="column"]:last-child .stButton > button:hover {
+        background: #2ea043 !important;
+    }
 
     /* Answer card */
     .answer-card {
-        background: white;
-        border-radius: 10px;
-        padding: 1.4rem 1.8rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        margin-bottom: 1rem;
-        border-left: 5px solid #457b9d;
-        font-size: 0.95rem;
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-left: 4px solid #58a6ff;
+        border-radius: 8px;
+        padding: 1.2rem 1.5rem;
+        font-size: 0.92rem;
         line-height: 1.75;
-        color: #1a1a2e;
+        color: #e6edf3;
+        margin-bottom: 0.75rem;
     }
 
     /* Chunk card */
     .chunk-card {
-        background: #fafafa;
-        border-radius: 8px;
-        padding: 0.8rem 1rem;
-        margin-bottom: 0.6rem;
-        border-left: 4px solid #457b9d;
-        font-size: 0.84rem;
-        color: #333;
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-left: 3px solid #58a6ff;
+        border-radius: 6px;
+        padding: 0.7rem 0.9rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.82rem;
+        color: #c9d1d9;
     }
     .chunk-card.table { border-left-color: #2a9d8f; }
     .chunk-card.image { border-left-color: #e76f51; }
 
     .chunk-meta {
-        font-size: 0.75rem;
-        color: #888;
-        margin-bottom: 0.3rem;
+        font-size: 0.73rem;
+        color: #6e7681;
+        margin-bottom: 0.35rem;
         display: flex;
-        gap: 0.5rem;
-        align-items: center;
+        gap: 0.4rem;
         flex-wrap: wrap;
+        align-items: center;
     }
 
     /* Badges */
-    .badge {
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 0.72rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-    .badge-text  { background:#264653; color:#fff; }
-    .badge-table { background:#2a9d8f; color:#fff; }
-    .badge-image { background:#e76f51; color:#fff; }
+    .badge { padding: 1px 7px; border-radius: 3px; font-size: 0.7rem; font-weight: 700; }
+    .badge-text  { background:#264653; color:#a8dadc; }
+    .badge-table { background:#0d3d38; color:#2dd4bf; }
+    .badge-image { background:#3d1a0d; color:#f97316; }
 
-    /* Citation */
+    /* Citations */
     .citation {
         display: inline-block;
-        background: #e8f4f8;
-        color: #457b9d;
-        border: 1px solid #b8d9ea;
+        background: #1c2b3a;
+        color: #58a6ff;
+        border: 1px solid #1f4f8c;
         border-radius: 4px;
-        padding: 2px 8px;
-        font-size: 0.75rem;
+        padding: 1px 7px;
+        font-size: 0.73rem;
         margin: 2px 3px 0 0;
     }
 
-    /* History question label */
     .q-label {
         font-size: 1rem;
         font-weight: 600;
-        color: #1a1a2e;
-        margin-bottom: 0.5rem;
+        color: #e6edf3;
+        margin: 1rem 0 0.75rem 0;
+        padding-left: 0.5rem;
+        border-left: 3px solid #58a6ff;
     }
 
-    /* Timing */
     .timing {
-        font-size: 0.75rem;
-        color: #aaa;
+        font-size: 0.72rem;
+        color: #484f58;
         margin-top: 0.5rem;
     }
 
-    /* Input area */
-    .stTextArea textarea {
-        border-radius: 8px !important;
-        font-size: 0.95rem !important;
-        border: 1.5px solid #d0d7de !important;
-    }
-    .stTextArea textarea:focus {
-        border-color: #457b9d !important;
-        box-shadow: 0 0 0 3px #457b9d22 !important;
-    }
-
-    /* Ask button */
-    .stButton > button {
-        background: #457b9d;
-        color: white;
-        border-radius: 8px;
-        border: none;
-        font-size: 0.95rem;
+    .section-label {
+        font-size: 0.8rem;
         font-weight: 600;
-        padding: 0.5rem 2rem;
-        width: 100%;
-        transition: background 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6e7681;
+        margin-bottom: 0.5rem;
     }
-    .stButton > button:hover { background: #1d3557; }
 
-    /* Sidebar */
-    section[data-testid="stSidebar"] {
-        background: #1a1a2e;
-        color: white;
-    }
-    section[data-testid="stSidebar"] * { color: white !important; }
-    section[data-testid="stSidebar"] .stButton > button {
-        background: #457b9d;
-        color: white;
+    /* Divider */
+    hr { border-color: #21262d !important; margin: 1.2rem 0 !important; }
+
+    /* Suggested chips */
+    .chip {
+        display: inline-block;
+        background: #21262d;
+        color: #8b949e;
+        border: 1px solid #30363d;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.78rem;
+        margin: 3px 4px 3px 0;
+        cursor: default;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -177,7 +222,7 @@ st.markdown("""
 if "engine" not in st.session_state:
     st.session_state.engine = None
 if "history" not in st.session_state:
-    st.session_state.history = []  # list of {question, answer: RAGAnswer}
+    st.session_state.history = []
 
 # ─────────────────────────────────────────────
 # SIDEBAR
@@ -185,13 +230,12 @@ if "history" not in st.session_state:
 
 with st.sidebar:
     st.markdown("## 🏠 Niwas RAG")
-    st.markdown("Ask anything about the **FY2025 Annual Report**")
+    st.markdown("Annual Report FY2025 · 133 pages")
     st.divider()
 
-    # Engine loader
     if st.session_state.engine is None:
-        st.warning("Engine not loaded")
-        if st.button("🚀 Load Engine", type="primary"):
+        st.markdown("**Engine not loaded**")
+        if st.button("Load Engine"):
             with st.spinner("Loading …"):
                 try:
                     st.session_state.engine = RAGEngine()
@@ -200,7 +244,7 @@ with st.sidebar:
                     st.error(str(e))
     else:
         st.success("✅ Engine ready")
-        if st.button("🔄 Reload"):
+        if st.button("Reload Engine"):
             st.session_state.engine = None
             st.rerun()
 
@@ -208,25 +252,24 @@ with st.sidebar:
     st.markdown("### Config")
     st.markdown(f"**Provider:** `{cfg.LLM_PROVIDER}`")
     st.markdown(f"**LLM:** `{cfg.GROQ_LLM_MODEL if cfg.LLM_PROVIDER == 'groq' else cfg.OLLAMA_LLM_MODEL}`")
-    st.markdown(f"**Embedding:** `BAAI/bge-base-en-v1.5`")
-    st.markdown(f"**Top-K:** `{cfg.TOP_K} chunks`")
+    st.markdown(f"**Embedding:** `bge-base-en-v1.5`")
+    st.markdown(f"**Top-K:** `{cfg.TOP_K}`")
 
     st.divider()
 
-    # Chunk stats
     try:
         import json as _json
         _chunks = _json.loads(cfg.CHUNKS_JSON.read_text())
-        st.markdown("### Index Stats")
-        st.markdown(f"📄 Text: **{sum(1 for c in _chunks if c['content_type']=='text')}**")
-        st.markdown(f"📊 Table: **{sum(1 for c in _chunks if c['content_type']=='table')}**")
-        st.markdown(f"🖼 Image: **{sum(1 for c in _chunks if c['content_type']=='image')}**")
-        st.markdown(f"Total: **{len(_chunks)} chunks**")
+        st.markdown("### Index")
+        st.markdown(f"📄 Text &nbsp; **{sum(1 for c in _chunks if c['content_type']=='text')}**")
+        st.markdown(f"📊 Table **{sum(1 for c in _chunks if c['content_type']=='table')}**")
+        st.markdown(f"🖼 Image **{sum(1 for c in _chunks if c['content_type']=='image')}**")
+        st.markdown(f"Total &nbsp; **{len(_chunks)} chunks**")
     except Exception:
         st.markdown("*Run pipeline first*")
 
     st.divider()
-    if st.button("🗑️ Clear History"):
+    if st.button("Clear History"):
         st.session_state.history = []
         st.rerun()
 
@@ -236,44 +279,44 @@ with st.sidebar:
 
 st.markdown("""
 <div class="app-header">
-  <h1>🏠 Niwas Housing Finance FY2025 — Ask Anything</h1>
-  <p>Answers are grounded in the 133-page annual report · text · tables · charts · citations included</p>
+  <h1>🏠 Niwas Housing Finance FY2025 — Document Q&amp;A</h1>
+  <p>Ask any question about the annual report · answers are grounded with source citations</p>
 </div>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# INPUT
+# INPUT ROW
 # ─────────────────────────────────────────────
 
-if st.session_state.engine is None:
-    st.info("⬅️ Click **Load Engine** in the sidebar to get started.")
+st.markdown('<div class="input-label">Ask a question about the annual report</div>', unsafe_allow_html=True)
 
-question = st.text_area(
-    "Your question",
-    height=100,
-    placeholder=(
-        "e.g. What is Niwas's total AUM as of March 2025?\n"
-        "e.g. What are the key risks mentioned in the MD&A?\n"
-        "e.g. What was the interest income for FY2025?"
-    ),
-    label_visibility="collapsed",
-    disabled=st.session_state.engine is None,
-)
+col_input, col_btn = st.columns([8, 1])
 
-ask_col, _ = st.columns([2, 5])
-with ask_col:
-    ask = st.button(
-        "🔍 Ask",
-        type="primary",
-        disabled=st.session_state.engine is None or not question.strip(),
+with col_input:
+    question = st.text_input(
+        label="question",
+        placeholder="e.g. What was the total interest income for FY2025?",
+        label_visibility="collapsed",
+        disabled=st.session_state.engine is None,
+        key="question_input",
     )
+
+with col_btn:
+    ask = st.button(
+        "Ask →",
+        type="primary",
+        disabled=st.session_state.engine is None or not (question or "").strip(),
+    )
+
+if st.session_state.engine is None:
+    st.caption("⬅ Load the engine from the sidebar to begin")
 
 # ─────────────────────────────────────────────
 # QUERY
 # ─────────────────────────────────────────────
 
 if ask and question.strip():
-    with st.spinner("Searching document and generating answer …"):
+    with st.spinner("Searching and generating answer …"):
         try:
             answer: RAGAnswer = st.session_state.engine.ask(question.strip())
             st.session_state.history.insert(0, {
@@ -285,73 +328,67 @@ if ask and question.strip():
             st.error(f"Error: {e}")
 
 # ─────────────────────────────────────────────
-# RESULTS HISTORY
+# EMPTY STATE
+# ─────────────────────────────────────────────
+
+if not st.session_state.history and st.session_state.engine is not None:
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("**Try asking:**")
+    st.markdown("""
+<span class="chip">What are the key risks in the MD&A?</span>
+<span class="chip">Total loan book March 2025 vs 2024?</span>
+<span class="chip">Interest income FY2025?</span>
+<span class="chip">AUM growth over the years?</span>
+<span class="chip">What is the GNPA ratio?</span>
+<span class="chip">Capital adequacy ratio FY2025?</span>
+<span class="chip">Who are the key management personnel?</span>
+<span class="chip">What is Niwas's strategy for expansion?</span>
+""", unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────
+# RESULTS
 # ─────────────────────────────────────────────
 
 for item in st.session_state.history:
     q: str       = item["question"]
     a: RAGAnswer = item["answer"]
 
-    # Question label
     st.markdown(f'<div class="q-label">💬 {q}</div>', unsafe_allow_html=True)
 
-    # Two columns: answer left, chunks right
     left, right = st.columns([5, 4])
 
-    # ── Answer ────────────────────────────────────────────────────────
     with left:
-        st.markdown("**Answer**")
+        st.markdown('<div class="section-label">Answer</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="answer-card">{a.answer}</div>', unsafe_allow_html=True)
 
-        # Citations
         if a.citations:
             cite_html = "".join(f'<span class="citation">{c}</span>' for c in a.citations)
             st.markdown(f"**Sources:** {cite_html}", unsafe_allow_html=True)
 
         st.markdown(
-            f'<div class="timing">⏱ {a.elapsed_seconds:.2f}s &nbsp;·&nbsp; {a.provider}/{a.model}</div>',
+            f'<div class="timing">⏱ {a.elapsed_seconds:.2f}s · {a.provider}/{a.model}</div>',
             unsafe_allow_html=True,
         )
 
-    # ── Retrieved Chunks ──────────────────────────────────────────────
     with right:
-        st.markdown(f"**Retrieved Chunks** (Top-{cfg.TOP_K})")
+        st.markdown(f'<div class="section-label">Retrieved Chunks (Top-{cfg.TOP_K})</div>', unsafe_allow_html=True)
         for c in a.retrieved_chunks:
             ct      = c["content_type"]
             icon    = {"text": "📄", "table": "📊", "image": "🖼"}.get(ct, "•")
             badge   = f'<span class="badge badge-{ct}">{icon} {ct}</span>'
-            preview = c["text"][:200].replace("\n", " ")
+            preview = c["text"][:180].replace("\n", " ")
 
             st.markdown(f"""
 <div class="chunk-card {ct}">
   <div class="chunk-meta">
     {badge}
-    <span>Rank {c['rank']}</span>
-    <span>·</span>
-    <span>Page {c['page_num']}</span>
-    <span>·</span>
-    <span>{c['section']}</span>
-    <span>·</span>
+    <span>Rank {c['rank']}</span>·
+    <span>Page {c['page_num']}</span>·
+    <span>{c['section']}</span>·
     <span>score {c['score']:.4f}</span>
   </div>
-  <div>{preview}…</div>
+  {preview}…
 </div>
 """, unsafe_allow_html=True)
 
-    st.divider()
-
-# ─────────────────────────────────────────────
-# EMPTY STATE
-# ─────────────────────────────────────────────
-
-if not st.session_state.history and st.session_state.engine is not None:
-    st.markdown("""
-    ### Try asking:
-    - *What are the key risks to Niwas's business?*
-    - *What is the total loan book as at March 31, 2025?*
-    - *What was the interest income for FY2025 compared to FY2024?*
-    - *What does the AUM chart show about growth?*
-    - *What is Niwas's capital adequacy ratio?*
-    - *Who are the key management personnel?*
-    - *What is the GNPA ratio for FY2025?*
-    """)
+    st.markdown("<hr>", unsafe_allow_html=True)
