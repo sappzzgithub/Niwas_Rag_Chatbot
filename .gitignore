@@ -1,0 +1,84 @@
+# ─────────────────────────────────────────────────────────────────
+# .gitignore — Multimodal RAG Project
+# ─────────────────────────────────────────────────────────────────
+
+# ── Environment ───────────────────────────────────────────────────
+.env
+*.env
+!.env.example
+
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+
+# ── Virtual environments ──────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.virtualenv/
+
+# ── PDF (large file — add manually to data/raw/) ──────────────────
+data/raw/*.pdf
+
+# ── Generated data (all pipeline outputs) ────────────────────────
+data/parsed/parsed.json
+data/parsed/pages_md/
+
+data/images/image_metadata.json
+data/images/vision_pages.json
+data/images/vision_descriptions.json
+data/images/embedded/
+data/images/page_renders/
+
+data/chunks/chunks.json
+
+data/vectordb/
+
+# ── Keep folder structure in git ──────────────────────────────────
+!data/raw/.gitkeep
+!data/parsed/.gitkeep
+!data/images/.gitkeep
+!data/chunks/.gitkeep
+!data/vectordb/.gitkeep
+
+# ── Outputs ───────────────────────────────────────────────────────
+outputs/*.json
+outputs/*.txt
+
+# ── Jupyter ───────────────────────────────────────────────────────
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── Testing ───────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ── IDE ───────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── OS ────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ── Logs ──────────────────────────────────────────────────────────
+*.log
+logs/
