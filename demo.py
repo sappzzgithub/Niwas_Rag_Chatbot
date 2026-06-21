@@ -22,6 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+import config as cfg
 from src.rag_engine import RAGEngine, RAGAnswer
 from src.utils import get_logger
 
@@ -140,6 +141,15 @@ def run_demo(
     print(f"  Run at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"{'#' * 72}")
 
+    # Show active provider
+    print(f"\n  LLM Provider : {cfg.LLM_PROVIDER}")
+    if cfg.LLM_PROVIDER == "groq":
+        print(f"  Model        : {cfg.GROQ_LLM_MODEL}")
+        print(f"  Question delay: {cfg.LLM_INTER_QUESTION_DELAY}s (TPM rate limit buffer)")
+    else:
+        print(f"  Model        : {cfg.OLLAMA_LLM_MODEL}")
+        print(f"  Question delay: none (local model)")
+
     engine = RAGEngine()
 
     qs = QUESTIONS
@@ -149,7 +159,16 @@ def run_demo(
     results: list[dict] = []
     total_start = time.perf_counter()
 
-    for q_meta in qs:
+    for i, q_meta in enumerate(qs):
+        # ── Inter-question delay (Groq TPM rate limit protection) ─────
+        if i > 0 and cfg.LLM_PROVIDER == "groq":
+            delay = cfg.LLM_INTER_QUESTION_DELAY
+            logger.info(
+                f"Waiting {delay}s before Q{q_meta['id']} "
+                f"(Groq TPM limit protection) …"
+            )
+            time.sleep(delay)
+
         print_question_header(q_meta)
         answer: RAGAnswer = engine.ask(q_meta["question"])
 

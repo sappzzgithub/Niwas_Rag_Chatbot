@@ -114,7 +114,7 @@ CHROMA_COLLECTION = PDF_NAME.replace(" ", "_").replace("-", "_")[:63]
 # ─────────────────────────────────────────────
 # PHASE 8 – RETRIEVAL
 # ─────────────────────────────────────────────
-TOP_K = 10
+TOP_K = 5
 
 # ─────────────────────────────────────────────
 # PHASE 9 – RAG / LLM
@@ -125,6 +125,7 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq")                # ← changed
 GROQ_LLM_MODEL   = os.getenv("GROQ_LLM_MODEL", "llama-3.3-70b-versatile")   # ← changed
 
 OLLAMA_LLM_MODEL = os.getenv("OLLAMA_LLM_MODEL", "mistral:7b")
+LLM_INTER_QUESTION_DELAY = int(os.getenv("LLM_INTER_QUESTION_DELAY", "30"))
 
 RAG_SYSTEM_PROMPT = """
 You are a precise financial analyst assistant with access to excerpts from the
