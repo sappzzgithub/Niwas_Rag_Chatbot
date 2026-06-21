@@ -183,7 +183,7 @@ class VisionAnalyzer:
     Supports incremental runs — pages already described are skipped.
     """
 
-    RATE_LIMIT_DELAY = 2.0   # seconds between API calls — Groq free tier is 30 req/min
+    RATE_LIMIT_DELAY = 4.0   # seconds between API calls — Groq free tier is 30 req/min
 
     def __init__(self):
         self.provider = get_vision_provider()

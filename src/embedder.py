@@ -1,3 +1,4 @@
+from __future__ import annotations
 """
 src/embedder.py  —  Phase 6 & 7: Embeddings + ChromaDB Indexing
 ================================================================
@@ -21,6 +22,7 @@ ChromaDB notes:
 import sys
 from pathlib import Path
 from typing import Any
+from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -38,7 +40,7 @@ logger = get_logger(__name__)
 # EMBEDDING MODEL (singleton within a process)
 # ─────────────────────────────────────────────
 
-_model_cache: SentenceTransformer | None = None
+_model_cache: Optional[SentenceTransformer] = None
 
 
 def get_embedding_model() -> SentenceTransformer:
@@ -68,7 +70,7 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
 # CHROMA CLIENT (singleton within a process)
 # ─────────────────────────────────────────────
 
-_chroma_client: chromadb.PersistentClient | None = None
+_chroma_client: Optional[chromadb.PersistentClient] = None
 
 
 def get_chroma_client() -> chromadb.PersistentClient:

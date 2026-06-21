@@ -135,16 +135,35 @@ class GroqLLMProvider(LLMProviderBase):
         logger.info(f"Groq LLM: {self.model_name}")
 
     def complete(self, system_prompt: str, user_prompt: str) -> str:
-        resp = self.client.chat.completions.create(
-            model=self.model_name,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user",   "content": user_prompt},
-            ],
-            temperature=0.1,
-            max_tokens=2048,
-        )
-        return resp.choices[0].message.content.strip()
+        for attempt in range(4):
+            try:
+                resp = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user",   "content": user_prompt},
+                    ],
+                    temperature=0.1,
+                    max_tokens=800,  # reduced from 2048 to stay under TPM limit
+                )
+                return resp.choices[0].message.content.strip()
+            except Exception as exc:
+                err = str(exc)
+                if "429" in err or "rate_limit" in err.lower():
+                    # Parse wait time from error message if available
+                    wait = 2 ** (attempt + 2)  # 4s, 8s, 16s, 32s
+                    import re
+                    match = re.search(r"try again in (\d+\.?\d*)s", err)
+                    if match:
+                        wait = float(match.group(1)) + 2
+                    logger.warning(
+                        f"Rate limit hit (attempt {attempt+1}/4). "
+                        f"Waiting {wait:.1f}s …"
+                    )
+                    time.sleep(wait)
+                else:
+                    raise
+        raise RuntimeError("Groq rate limit: all 4 retries exhausted")
 
 
 class OllamaLLMProvider(LLMProviderBase):
